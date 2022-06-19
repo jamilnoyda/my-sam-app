@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'my-sam-app
+
+  Sample SAM Template for my-sam-app
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://my-sam-app-qacgo/3effbfcad2c6619174f6da676667b07d
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+    Metadata:
+      SamResourceId: HelloWorldFunction
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunction
+      - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunctionRole
+      - Arn
+
+# sam deploy --template-file my-sam-app-compiled-template.yaml  --stack-name my-sam-app-stack     --capabilities CAPABILITY_IAM
+# sam package --output-template-file my-sam-app-compiled-template.yaml --s3-bucket my-sam-app-qacgo
+# sam deploy --template-file my-sam-app-compiled-template.yaml --stack-name my-sam-app-stack --capabilities CAPABILITY_IAM --region ap-south-1 --parameter-overrides IdentityNameParameter=xyz
+# sam deploy --template-file my-sam-app-compiled-template.yaml --stack-name my-sam-app-stack --capabilities CAPABILITY_IAM --region ap-south-1
